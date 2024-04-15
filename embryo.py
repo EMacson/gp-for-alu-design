@@ -1,0 +1,21 @@
+GATE("a1", type="inp")
+GATE("a2", type="inp")
+GATE("f1", type="inp")
+GATE("f2", type="inp")
+GATE("cin", type="inp")
+GATE("b0", type="out")
+GATE("cout", type="out")
+
+GATE("g1", type="or2")
+GATE("g2", type="or2")
+GATE("g3", type="or2")
+
+WIRE("cin", "cout")
+WIRE("a1", "g1/x1")
+WIRE("a2", "g1/x2")
+WIRE("f1", "g2/x1")
+WIRE("f2", "g2/x2")
+WIRE("g1/y", "g3/x1")
+WIRE("g2/y", "g3/x2")
+WIRE("g3/y", "b0")
+
