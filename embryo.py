@@ -1,3 +1,4 @@
+Define("embryo")
 GATE("a1", type="inp")
 GATE("a2", type="inp")
 GATE("f1", type="inp")
@@ -18,4 +19,4 @@ WIRE("f2", "g2/x2")
 WIRE("g1/y", "g3/x1")
 WIRE("g2/y", "g3/x2")
 WIRE("g3/y", "b0")
-
+EndDef()
