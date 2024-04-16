@@ -25,10 +25,11 @@ def main():
 
     # run selector
     circuit0 = os.path.join(CIRCUITS_DIR, "2024-04-16_11-58-09/0")
-    generation_evaluation(circuit0)
+    parents = generation_evaluation(circuit0)
+    msg = f"parent 1: {parents["circ1"][0]} parent 2: {parents["circ2"][0]}"
     #score = circuit_evaluation(circuit0, "0")
     #msg = f"score {score}/64"
-    #print(msg)
+    print(msg)
     
     # teriminate?
 

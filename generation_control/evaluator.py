@@ -58,9 +58,17 @@ def generation_evaluation(circuit_gen):
         score = circuit_evaluation(circuit)
         msg = f"circuit {i}: score {score}/64"
         print(msg)
+
+        if score > parents["circ1"][1]:
+            temp = parents["circ1"]
+            parents["circ1"] = (i, score)
+            parents["circ2"] = temp
+        elif score > parents["circ2"][1]:
+            parents["circ2"] = (i, score)
+        
     #load("0")
     #circuit00 = PyCirc["0"]
     #score = circuit_evaluation(circuit00)
     #msg = f"score {score}/64"
     #print(msg)
-    pass
+    return parents
