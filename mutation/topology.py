@@ -1,6 +1,7 @@
 import os
 import random
 from pycirchdl import *
+import time
 
 from constants import GENERATION_SIZE, MUTATION_RATE
 #from utils import gate_select, get_gate
@@ -85,8 +86,16 @@ def insert_or(circ, circ_file):
     #print(type(randomized_wires))
     wire1 = randomized_wires[0]
     wire2 = randomized_wires[1]
-    randomized_wires[0].target = new_gate_name+"/x1"
-    randomized_wires[1].target = new_gate_name+"/x2"
+    temp = wire1
+    temp.target = new_gate_name+"/x1"
+    randomized_wires.append(temp)
+    temp = wire2
+    temp.target = new_gate_name+"/x2"
+    randomized_wires.append(temp)
+    print(wire1)
+    print(wire2)
+    #randomized_wires[0].target = new_gate_name+"/x1"
+    #randomized_wires[1].target = new_gate_name+"/x2"
     random.shuffle(randomized_wires)
     wire3 = ""
     wire_found = False
@@ -110,7 +119,7 @@ def insert_or(circ, circ_file):
         # if it does this creates a sequential circuit
         # and we should reject this wire
         temp = w
-        print("\n==================\ncheck new w\n==========================")
+        print("\n======================\ncheck new w\n==========================")
         print(temp)
         temp_gate = ""
         while not wire_found:
@@ -226,8 +235,16 @@ def insert_and(circ, circ_file):
     #print(type(randomized_wires))
     wire1 = randomized_wires[0]
     wire2 = randomized_wires[1]
-    randomized_wires[0].target = new_gate_name+"/x1"
-    randomized_wires[1].target = new_gate_name+"/x2"
+    temp = wire1
+    wire1.target = new_gate_name+"/x1"
+    randomized_wires.append(temp)
+    temp = wire2
+    wire2.target = new_gate_name+"/x2"
+    randomized_wires.append(temp)
+    print(wire1)
+    print(wire2)
+    #randomized_wires[0].target = new_gate_name+"/x1"
+    #randomized_wires[1].target = new_gate_name+"/x2"
     random.shuffle(randomized_wires)
     wire3 = ""
     wire_found = False
@@ -336,18 +353,131 @@ def insert(circ, path):
         print(msg, path)
         insert_and(circ, path)
 
-def delete_size1(circ, gate, path):
-    pass
+def delete_size1(circ, gate, circ_file):
+    wire1=""
+    wire3=""
+    # get input wires
+    for w in circ.wires:
+        if w.target == gate.name+"/x":
+            wire1 = w
+        elif w.source == gate.name+"/y":
+            wire3 = w
+    out_wires = []
+    # get ouput wires
+    for w in circ.wires:
+        if w.source == gate.name+"/y":
+            out_wires.append(w)
 
-def delete_size2(circ, gate, path):
-    gate_txt=f"GATE(\"{gate.name}\", type\"{gate.type}\")"
+    # txt variables for file
+    gate_txt=f"GATE(\"{gate.name}\", type=\"{gate.type}\")"
+    wire_txt=f""
+    wire1_txt=f"WIRE(\"{wire1.source}\", \"{wire1.target}\")"
+    wire3_txt=f"WIRE(\"{wire3.source}\", \"{wire3.target}\")"
+    out_wires_txt = []
+    for t in out_wires:
+        wire_txt=f"WIRE(\"{wire1.source}\", \"{t.target}\")\n"
+        out_wires_txt.append(wire_txt)
+    wire_txt=f"WIRE(\"{wire1.source}\", \"{wire3.target}\")\n"
+        
 
-    pass
+    print("\n"+gate_txt)
+    print(wire1_txt)
+    print(wire3_txt)
+    print("\n"+wire_txt)
+
+    # write to circ file
+    circ_file = os.path.join(circ_file, circ.name+".py")
+    with open(circ_file, "r") as file:
+        lines = file.readlines()
+
+    modified_lines = []
+    for line in lines:
+        if line.strip() == gate_txt:
+            continue
+        elif line.strip() == wire1_txt:
+            continue
+        elif line.strip() == wire3_txt:
+            #modified_lines.append(wire_txt)
+            modified_lines+=(out_wires_txt)
+        else:
+            modified_lines.append(line)
+
+    with open(circ_file, "w") as file:
+        file.writelines(modified_lines)
+
+def delete_size2(circ, gate, circ_file):
+    wire1=""
+    wrie2=""
+    wire3=""
+    # get input wires
+    for w in circ.wires:
+        if w.target == gate.name+"/x1":
+            wire1 = w
+        elif w.target == gate.name+"/x2":
+            wire2 = w
+        elif w.source == gate.name+"/y":
+            wire3 = w
+    out_wires = []
+    # get ouput wires
+    for w in circ.wires:
+        if w.source == gate.name+"/y":
+            out_wires.append(w)
+
+    gate_txt=f"GATE(\"{gate.name}\", type=\"{gate.type}\")"
+    wire_txt=f""
+    wire1_txt=f"WIRE(\"{wire1.source}\", \"{wire1.target}\")"
+    wire2_txt=f"WIRE(\"{wire2.source}\", \"{wire2.target}\")"
+    wire3_txt=f"WIRE(\"{wire3.source}\", \"{wire3.target}\")"
+    out_wires_txt = []
+    choose_in = random.randint(1, 2)
+    if choose_in == 1:
+        for t in out_wires:
+            wire_txt=f"WIRE(\"{wire1.source}\", \"{t.target}\")\n"
+            out_wires_txt.append(wire_txt)
+        wire_txt=f"WIRE(\"{wire1.source}\", \"{wire3.target}\")\n"
+        pass
+    elif choose_in == 2:
+        for t in out_wires:
+            wire_txt=f"WIRE(\"{wire2.source}\", \"{t.target}\")\n"
+            out_wires_txt.append(wire_txt)
+        wire_txt=f"WIRE(\"{wire2.source}\", \"{wire3.target}\")\n"
+        pass
+
+    print("\n"+gate_txt)
+    print(wire1_txt)
+    print(wire2_txt)
+    print(wire3_txt)
+    print("\n"+wire_txt)
+
+    # write to circ file
+    circ_file = os.path.join(circ_file, circ.name+".py")
+    with open(circ_file, "r") as file:
+        lines = file.readlines()
+
+    modified_lines = []
+    for line in lines:
+        if line.strip() == gate_txt:
+            continue
+        elif line.strip() == wire1_txt:
+            continue
+        elif line.strip() == wire2_txt:
+            continue
+        elif line.strip() == wire3_txt:
+            #modified_lines.append(wire_txt)
+            modified_lines+=(out_wires_txt)
+        else:
+            modified_lines.append(line)
+
+    with open(circ_file, "w") as file:
+        file.writelines(modified_lines)
+
+    time.sleep(3)
+    
 
 # delete gate
 def delete(circ, path):
-    # only delete a gate if the circuit has 5 or more gates
-    if len(circ.gates) < 5:
+    # only delete a gate if the circuit has 12 or more gates
+    if len(circ.gates) < 12:
         return
     
     randomized_gates = circ.gates
@@ -356,15 +486,49 @@ def delete(circ, path):
     gate_to_delete = randomized_gates[0]
     
     if gate_to_delete.type == "or2":
-        delete_size2(circ, gate, path)
+        delete_size2(circ, gate_to_delete, path)
+        print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n delete happened\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n ")
     elif gate_to_delete.type == "and2":
-        delete_size2(circ, gate, path)
+        delete_size2(circ, gate_to_delete, path)
+        print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n delete happened\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n ")
     elif gate_to_delete.type == "not":
-        delete_size1(circ, gate, path)
+        delete_size1(circ, gate_to_delete, path)
 
+    
+def invert_size2(circ, gate, new_type, circ_file):
+    #gate.type = new_type
+    original_txt=f"GATE(\"{gate.name}\", type=\"{gate.type}\")"
+    new_gate_txt=f"GATE(\"{gate.name}\", type=\"{new_type}\")"
+
+    # write to circ file
+    circ_file = os.path.join(circ_file, circ.name+".py")
+    with open(circ_file, "r") as file:
+        lines = file.readlines()
+
+    modified_lines = []
+    for line in lines:
+        if line.strip() == original_txt:
+            modified_lines.append(new_gate_txt)
+        else:
+            modified_lines.append(line)
+        pass
+
+    with open(circ_file, "w") as file:
+        file.writelines(modified_lines)
+    pass
 
 # invert/change gate type
-def invert(circ):
+def invert(circ, path):
+    randomized_gates = circ.gates
+    random.shuffle(randomized_gates)
+
+    gate_to_delete = randomized_gates[0]
+
+    if gate_to_delete.type == "or2":
+        invert_size2(circ, gate_to_delete, "and2", path)
+    elif gate_to_delete.type == "and2":
+        invert_size2(circ, gate_to_delete, "or2", path)
+
     pass
 
 def topology(path, gen_count):
@@ -391,8 +555,9 @@ def topology(path, gen_count):
             break
         elif random_number == 1:
             delete(circ, path)
+            print(i)
         elif random_number == 2:
-            invert(circ)
+            invert(circ, path)
         pass
 
     pass
