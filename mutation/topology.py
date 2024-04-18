@@ -85,8 +85,11 @@ def insert_or(circ, circ_file):
     #print(type(randomized_wires))
     wire1 = randomized_wires[0]
     wire2 = randomized_wires[1]
+    randomized_wires[0].target = new_gate_name+"/x1"
+    randomized_wires[1].target = new_gate_name+"/x2"
     random.shuffle(randomized_wires)
     wire3 = ""
+    wire_found = False
     for w in randomized_wires:
         if w.target == "b":
             continue
@@ -103,8 +106,70 @@ def insert_or(circ, circ_file):
         elif w.source == "cin":
             continue
 
-        wire3 = w
-        break
+        # check if wire target leds back to the new gate
+        # if it does this creates a sequential circuit
+        # and we should reject this wire
+        temp = w
+        temp_gate = ""
+        while not wire_found:
+            # check if temp's target is an output gate
+            if temp.target == "b0":
+                wire_found = True
+                break
+            elif temp.target == "cout":
+                wire_found = True
+                break
+            # check if temp's target is the new gate
+            elif temp.target == new_gate_name+"/x1":
+                break 
+            elif temp.target == new_gate_name+"/x2":
+                break
+
+            #print(temp.target)
+            temp_gate = temp.target[:2]
+            #print(temp_gate)
+            new_source = temp_gate+"/y"
+            for v in circ.wires:
+                if v.source == new_source:
+                    temp = v
+                    break
+
+            print(temp)
+
+        if wire_found:
+            wire3 = w
+            break
+
+        """
+        temp = w
+        temp_gate = ""
+        while not wire_found:
+            # check if temp's target is an output gate
+            if temp.target == "b0":
+                wire_found = True
+                break
+            elif temp.target == "cout":
+                wire_found = True
+                break
+            # check if temp's target is the new gate
+            elif temp.target == new_gate_name+"/x1":
+                break
+            elif temp.target == new_gate_name+"/x2":
+                break
+            
+            print(temp.target)
+            temp_gate = temp.target[:2]
+            #print(temp_gate)
+            new_source = temp_gate+"/y"
+            for v in circ.wires:
+                if v.source == new_source:
+                    temp = v
+                    break
+
+        if wire_found:
+            wire3 = w
+            break
+    """
 
     # create txt fields
     new_gate_txt = f"GATE(\"{new_gate_name}\", type=\"or2\")\n"
@@ -262,7 +327,8 @@ def topology(path, gen_count):
         # select insert or delete
         random_number = random.randint(0, 2)
         if random_number == 0:
-            insert(circ, path)
+            print(i)
+            insert_or(circ, path)
             print(i)
             break
         elif random_number == 1:

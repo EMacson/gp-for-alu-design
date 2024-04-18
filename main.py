@@ -28,6 +28,7 @@ def main():
         print(subdirectory_path)
         circuit_gen = os.path.join(CIRCUITS_DIR, subdirectory_path)
 
+    #for i in range(1):
     while True:
         # run selector
         #circuit_gen = os.path.join(circuit_gen, str(gen_count))

@@ -15,6 +15,33 @@ def circuit_evaluation(circuit00):
     score = 0
     count = 0
 
+    # check for any dangling pins
+    for g in circuit00.gates:
+        if g.name == "a1":
+            continue
+        elif g.name == "a2":
+            continue
+        elif g.name == "f1":
+            continue
+        elif g.name == "f2":
+            continue
+        elif g.name == "cin":
+            continue
+        elif g.name == "b0":
+            continue
+        elif g.name == "cout":
+            continue
+
+        no_out = True
+        for w in circuit00.wires:
+            if w.source == g.name+"/y":
+                no_out = False
+                break
+        if no_out:
+            msg = f"gate {g.name} have no out wire"
+            print(msg)
+            return score
+
     for a in Assign.iter(Input):
         o = circuit00(a)
         if o()[0] == B_OUT[count]:
