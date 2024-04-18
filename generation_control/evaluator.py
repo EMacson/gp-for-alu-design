@@ -66,8 +66,11 @@ def generation_evaluation(circuit_gen, gen_count):
 
     for i in range(GENERATION_SIZE):
         i_str = str(i)
-        load(i_str)
-        circuit = PyCirc[i_str]
+        try:
+            load(i_str)
+            circuit = PyCirc[i_str]
+        except:
+            continue
         score = circuit_evaluation(circuit)
         msg = f"circuit {i}: score {score}/64"
         print(msg)
