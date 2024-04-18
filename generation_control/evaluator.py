@@ -39,11 +39,11 @@ def generation_evaluation(circuit_gen, gen_count):
 
     for i in range(GENERATION_SIZE):
         i_str = str(i)
-        need(i_str)
+        load(i_str)
         circuit = PyCirc[i_str]
         score = circuit_evaluation(circuit)
         msg = f"circuit {i}: score {score}/64"
-        #print(msg)
+        print(msg)
 
         if score > parents["circ1"][1]:
             temp = parents["circ1"]

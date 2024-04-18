@@ -28,7 +28,7 @@ def main():
         print(subdirectory_path)
         circuit_gen = os.path.join(CIRCUITS_DIR, subdirectory_path)
 
-    for i in range(5):
+    while True:
         # run selector
         #circuit_gen = os.path.join(circuit_gen, str(gen_count))
         parents = generation_evaluation(circuit_gen, gen_count)
@@ -55,6 +55,7 @@ def main():
 
         # mutate
         topology(circuit_gen, gen_count)
+        #parents = generation_evaluation(circuit_gen, gen_count)
 
         # loop back
 
