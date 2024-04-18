@@ -27,6 +27,18 @@ def init_gen(path):
 
     pass
 
-def generate(path, gen_count, parent):
+def generate_gen(path, gen_count):
+    # create new generation directory
+    new_gen = os.path.join(path, str(gen_count))
+    os.makedirs(new_gen)
+
+    # get parent file path
+    parent_file = os.path.join(path, str(gen_count-1))
+    parent_file = os.path.join(parent_file, "parent.py")
+
+    for i in range(GENERATION_SIZE):
+        new_circuit_file = os.path.join(new_gen, str(i)+".py")
+        shutil.copy2(parent_file, new_circuit_file)
+        pass
 
     pass
