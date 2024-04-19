@@ -1,6 +1,7 @@
 from pycirchdl import *
 
 from constants import GENERATION_SIZE, B_OUT, CARRY_OUT
+from utils import redirect_print, restore_print
 
 def evaluate():
     pass
@@ -67,8 +68,10 @@ def generation_evaluation(circuit_gen, gen_count):
     for i in range(GENERATION_SIZE):
         i_str = str(i)
         try:
+            redirect_print()
             load(i_str)
             circuit = PyCirc[i_str]
+            restore_print()
         except:
             continue
         score = circuit_evaluation(circuit)

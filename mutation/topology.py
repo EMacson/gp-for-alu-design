@@ -5,7 +5,7 @@ import time
 
 from constants import GENERATION_SIZE, MUTATION_RATE
 #from utils import gate_select, get_gate
-from utils import select_gate
+from utils import select_gate, redirect_print, restore_print
 
 def insert_not(circ, circ_file):
     gate = "not"
@@ -431,6 +431,7 @@ def delete_size1(circ, gate, circ_file):
         wire_txt=f"WIRE(\"{wire1.source}\", \"{wire3.target}\")\n"
     except:
         print(f"couldn't delete {gate.type}")
+        return
 
     print("\n"+gate_txt)
     print(wire1_txt)
@@ -528,7 +529,7 @@ def delete_size2(circ, gate, circ_file):
     with open(circ_file, "w") as file:
         file.writelines(modified_lines)
 
-    time.sleep(3)
+    #time.sleep(3)
     
 
 # delete gate
@@ -600,9 +601,10 @@ def topology(path, gen_count):
 
         print("mutate topology")
         #circ = os.path.join(path, str(i))
+        redirect_print()
         need(str(i))
         circ = PyCirc[str(i)]
-        
+        restore_print()
         # select insert or delete
         random_number = random.randint(0, 3)
         if random_number == 0:
