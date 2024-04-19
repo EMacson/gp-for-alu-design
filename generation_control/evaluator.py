@@ -61,8 +61,8 @@ def generation_evaluation(circuit_gen, gen_count):
     # dictionary for storing the top 2 circuits
     # format, "circ1": (circuit_num, score)
     parents = {
-        "circ1": (-1, -1),
-        "circ2": (-1, -1),
+        "circ1": (0, -1),
+        "circ2": (0, -1),
     }
 
     for i in range(GENERATION_SIZE):
