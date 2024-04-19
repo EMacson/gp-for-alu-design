@@ -1,12 +1,16 @@
 import os
+import threading
 from datetime import datetime
 
 from constants import MAIN_DIR, CIRCUITS_DIR, EMBRYO, MAX_SCORE
+from utils import redirect_print, restore_print
 #import constants
 from generation_control.generator import init_gen, generate_gen
 from generation_control.evaluator import circuit_evaluation, generation_evaluation
 from generation_control.crossover import crossover
 from mutation.topology import topology
+
+from monitor_output import monitor
 
 
 def main():
@@ -22,14 +26,19 @@ def main():
         subdirectory_path = os.path.join(CIRCUITS_DIR, subdirectory)
         os.makedirs(subdirectory_path)
 
+        # create thread for monitoring output
+        interrupt_event = threading.Event()
+
+        
+
         # create first generation
         gen_count = 0
         init_gen(subdirectory_path)
         print(subdirectory_path)
         circuit_gen = os.path.join(CIRCUITS_DIR, subdirectory_path)
 
-    #for i in range(1):
-    while True:
+    for i in range(500):
+    #while True:
         # run selector
         #circuit_gen = os.path.join(circuit_gen, str(gen_count))
         parents = generation_evaluation(circuit_gen, gen_count)

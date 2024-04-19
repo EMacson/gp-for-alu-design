@@ -5,7 +5,7 @@ GENERATION_SIZE = 100
 MAIN_DIR = os.path.dirname(os.path.abspath(__file__))
 CIRCUITS_DIR = os.path.join(MAIN_DIR, "circuits")
 EMBRYO = os.path.join(MAIN_DIR, "embryo.py")
-MUTATION_RATE = 5
+MUTATION_RATE = 50
 
 # circuit definitions
 OPERAND_SIZE = 2
