@@ -18,12 +18,30 @@ def insert_not(circ, circ_file):
     original_wire = circ.wires[random_wire]
     new_wire = original_wire
     #print(circ.gates)
-    num_gates = len(circ.gates)
-    last_gate = circ.gates[num_gates-1]
-    last_gate_name = circ.gates[num_gates-1].name
-    gate_suffix = last_gate_name[1:]
-    gate_num = int(gate_suffix)
-    new_gate_name = "g"+str(gate_num+1)
+    #num_gates = len(circ.gates)
+    #last_gate = circ.gates[num_gates-1]
+    last_gate_num = -1
+    last_gate = ""
+    for g in circ.gates:
+        if g.type == "inp" or g.type == "out":
+            continue
+        curr_num = int(g.name[1:])
+        if curr_num > last_gate_num:
+            last_gate_num = curr_num
+            last_gate = g
+    last_gate_num = last_gate_num + 1
+    new_gate_name = "g"+str(last_gate_num)
+    
+
+
+
+    #num_gates = len(circ.gates)
+    #last_gate = circ.gates[num_gates-1]
+    #last_gate_name = circ.gates[num_gates-1].name
+    #gate_suffix = last_gate_name[1:]
+    #print(gate_suffix)
+    #gate_num = int(gate_suffix)
+    #new_gate_name = "g"+str(gate_num+1)
     print(new_gate_name)
     print(original_wire.source)
     print(original_wire.target)
@@ -73,12 +91,24 @@ def insert_or(circ, circ_file):
     print(msg)
 
     # get the last gate
-    num_gates = len(circ.gates)
+    last_gate_num = -1
+    last_gate = ""
+    for g in circ.gates:
+        if g.type == "inp" or g.type == "out":
+            continue
+        curr_num = int(g.name[1:])
+        if curr_num > last_gate_num:
+            last_gate_num = curr_num
+            last_gate = g
+    last_gate_num = last_gate_num + 1
+    new_gate_name = "g"+str(last_gate_num)
+    """num_gates = len(circ.gates)
     last_gate = circ.gates[num_gates-1]
     last_gate_name = circ.gates[num_gates-1].name
     gate_suffix = last_gate_name[1:]
+    print(gate_suffix)
     gate_num = int(gate_suffix)
-    new_gate_name = "g"+str(gate_num+1)
+    new_gate_name = "g"+str(gate_num+1)"""
 
     # choose input wires
     randomized_wires = circ.wires
@@ -183,18 +213,22 @@ def insert_or(circ, circ_file):
     """
 
     # create txt fields
-    new_gate_txt = f"GATE(\"{new_gate_name}\", type=\"or2\")\n"
-    original_last_gate_txt = F"GATE(\"{last_gate.name}\", type=\"{last_gate.type}\")"
-    wire1_txt=f"WIRE(\"{wire1.source}\", \"{new_gate_name}/x1\")\n"
-    wire2_txt=f"WIRE(\"{wire2.source}\", \"{new_gate_name}/x2\")\n"
-    old_wire_txt=f"WIRE(\"{wire3.source}\", \"{wire3.target}\")"
-    wire3_txt=f"WIRE(\"{new_gate_name}/y\", \"{wire3.target}\")\n"
-    print("old_wire_txt\t"+old_wire_txt)
-    print("original_last_gate_txt\t"+original_last_gate_txt)
-    print("new_gate_txt\t"+new_gate_txt)
-    print("wire1_txt\t"+wire1_txt)
-    print("wire2_txt\t"+wire2_txt)
-    print("wire3_txt\t"+wire3_txt)
+    try:
+        new_gate_txt = f"GATE(\"{new_gate_name}\", type=\"or2\")\n"
+        original_last_gate_txt = F"GATE(\"{last_gate.name}\", type=\"{last_gate.type}\")"
+        wire1_txt=f"WIRE(\"{wire1.source}\", \"{new_gate_name}/x1\")\n"
+        wire2_txt=f"WIRE(\"{wire2.source}\", \"{new_gate_name}/x2\")\n"
+        old_wire_txt=f"WIRE(\"{wire3.source}\", \"{wire3.target}\")"
+        wire3_txt=f"WIRE(\"{new_gate_name}/y\", \"{wire3.target}\")\n"
+        print("old_wire_txt\t"+old_wire_txt)
+        print("original_last_gate_txt\t"+original_last_gate_txt)
+        print("new_gate_txt\t"+new_gate_txt)
+        print("wire1_txt\t"+wire1_txt)
+        print("wire2_txt\t"+wire2_txt)
+        print("wire3_txt\t"+wire3_txt)
+    except:
+        print("couldn't insert or gate")
+        return
 
 
     # write to circ file
@@ -222,12 +256,24 @@ def insert_and(circ, circ_file):
     print(msg)
 
     # get the last gate
-    num_gates = len(circ.gates)
+    last_gate_num = -1
+    last_gate = ""
+    for g in circ.gates:
+        if g.type == "inp" or g.type == "out":
+            continue
+        curr_num = int(g.name[1:])
+        if curr_num > last_gate_num:
+            last_gate_num = curr_num
+            last_gate = g
+    last_gate_num = last_gate_num + 1
+    new_gate_name = "g"+str(last_gate_num)
+    """num_gates = len(circ.gates)
     last_gate = circ.gates[num_gates-1]
     last_gate_name = circ.gates[num_gates-1].name
     gate_suffix = last_gate_name[1:]
+    print(gate_suffix)
     gate_num = int(gate_suffix)
-    new_gate_name = "g"+str(gate_num+1)
+    new_gate_name = "g"+str(gate_num+1)"""
 
     # choose input wires
     randomized_wires = circ.wires
@@ -298,18 +344,22 @@ def insert_and(circ, circ_file):
             break
 
     # create txt fields
-    new_gate_txt = f"GATE(\"{new_gate_name}\", type=\"and2\")\n"
-    original_last_gate_txt = F"GATE(\"{last_gate.name}\", type=\"{last_gate.type}\")"
-    wire1_txt=f"WIRE(\"{wire1.source}\", \"{new_gate_name}/x1\")\n"
-    wire2_txt=f"WIRE(\"{wire2.source}\", \"{new_gate_name}/x2\")\n"
-    old_wire_txt=f"WIRE(\"{wire3.source}\", \"{wire3.target}\")"
-    wire3_txt=f"WIRE(\"{new_gate_name}/y\", \"{wire3.target}\")\n"
-    print("old_wire_txt\t"+old_wire_txt)
-    print("original_last_gate_txt\t"+original_last_gate_txt)
-    print("new_gate_txt\t"+new_gate_txt)
-    print("wire1_txt\t"+wire1_txt)
-    print("wire2_txt\t"+wire2_txt)
-    print("wire3_txt\t"+wire3_txt)
+    try:
+        new_gate_txt = f"GATE(\"{new_gate_name}\", type=\"and2\")\n"
+        original_last_gate_txt = F"GATE(\"{last_gate.name}\", type=\"{last_gate.type}\")"
+        wire1_txt=f"WIRE(\"{wire1.source}\", \"{new_gate_name}/x1\")\n"
+        wire2_txt=f"WIRE(\"{wire2.source}\", \"{new_gate_name}/x2\")\n"
+        old_wire_txt=f"WIRE(\"{wire3.source}\", \"{wire3.target}\")"
+        wire3_txt=f"WIRE(\"{new_gate_name}/y\", \"{wire3.target}\")\n"
+        print("old_wire_txt\t"+old_wire_txt)
+        print("original_last_gate_txt\t"+original_last_gate_txt)
+        print("new_gate_txt\t"+new_gate_txt)
+        print("wire1_txt\t"+wire1_txt)
+        print("wire2_txt\t"+wire2_txt)
+        print("wire3_txt\t"+wire3_txt)
+    except:
+        print("couldn't insert and gate")
+        return
 
 
     # write to circ file
@@ -369,16 +419,18 @@ def delete_size1(circ, gate, circ_file):
             out_wires.append(w)
 
     # txt variables for file
-    gate_txt=f"GATE(\"{gate.name}\", type=\"{gate.type}\")"
-    wire_txt=f""
-    wire1_txt=f"WIRE(\"{wire1.source}\", \"{wire1.target}\")"
-    wire3_txt=f"WIRE(\"{wire3.source}\", \"{wire3.target}\")"
-    out_wires_txt = []
-    for t in out_wires:
-        wire_txt=f"WIRE(\"{wire1.source}\", \"{t.target}\")\n"
-        out_wires_txt.append(wire_txt)
-    wire_txt=f"WIRE(\"{wire1.source}\", \"{wire3.target}\")\n"
-        
+    try:
+        gate_txt=f"GATE(\"{gate.name}\", type=\"{gate.type}\")"
+        wire_txt=f""
+        wire1_txt=f"WIRE(\"{wire1.source}\", \"{wire1.target}\")"
+        wire3_txt=f"WIRE(\"{wire3.source}\", \"{wire3.target}\")"
+        out_wires_txt = []
+        for t in out_wires:
+            wire_txt=f"WIRE(\"{wire1.source}\", \"{t.target}\")\n"
+            out_wires_txt.append(wire_txt)
+        wire_txt=f"WIRE(\"{wire1.source}\", \"{wire3.target}\")\n"
+    except:
+        print(f"couldn't delete {gate.type}")
 
     print("\n"+gate_txt)
     print(wire1_txt)
@@ -423,25 +475,30 @@ def delete_size2(circ, gate, circ_file):
         if w.source == gate.name+"/y":
             out_wires.append(w)
 
-    gate_txt=f"GATE(\"{gate.name}\", type=\"{gate.type}\")"
-    wire_txt=f""
-    wire1_txt=f"WIRE(\"{wire1.source}\", \"{wire1.target}\")"
-    wire2_txt=f"WIRE(\"{wire2.source}\", \"{wire2.target}\")"
-    wire3_txt=f"WIRE(\"{wire3.source}\", \"{wire3.target}\")"
-    out_wires_txt = []
-    choose_in = random.randint(1, 2)
-    if choose_in == 1:
-        for t in out_wires:
-            wire_txt=f"WIRE(\"{wire1.source}\", \"{t.target}\")\n"
-            out_wires_txt.append(wire_txt)
-        wire_txt=f"WIRE(\"{wire1.source}\", \"{wire3.target}\")\n"
-        pass
-    elif choose_in == 2:
-        for t in out_wires:
-            wire_txt=f"WIRE(\"{wire2.source}\", \"{t.target}\")\n"
-            out_wires_txt.append(wire_txt)
-        wire_txt=f"WIRE(\"{wire2.source}\", \"{wire3.target}\")\n"
-        pass
+    # write text components
+    try:
+        gate_txt=f"GATE(\"{gate.name}\", type=\"{gate.type}\")"
+        wire_txt=f""
+        wire1_txt=f"WIRE(\"{wire1.source}\", \"{wire1.target}\")"
+        wire2_txt=f"WIRE(\"{wire2.source}\", \"{wire2.target}\")"
+        wire3_txt=f"WIRE(\"{wire3.source}\", \"{wire3.target}\")"
+        out_wires_txt = []
+        choose_in = random.randint(1, 2)
+        if choose_in == 1:
+            for t in out_wires:
+                wire_txt=f"WIRE(\"{wire1.source}\", \"{t.target}\")\n"
+                out_wires_txt.append(wire_txt)
+            wire_txt=f"WIRE(\"{wire1.source}\", \"{wire3.target}\")\n"
+            pass
+        elif choose_in == 2:
+            for t in out_wires:
+                wire_txt=f"WIRE(\"{wire2.source}\", \"{t.target}\")\n"
+                out_wires_txt.append(wire_txt)
+            wire_txt=f"WIRE(\"{wire2.source}\", \"{wire3.target}\")\n"
+            pass
+    except:
+        print(f"couldn't delete {gate.type}")
+        return
 
     print("\n"+gate_txt)
     print(wire1_txt)
@@ -543,7 +600,7 @@ def topology(path, gen_count):
 
         print("mutate topology")
         #circ = os.path.join(path, str(i))
-        load(str(i))
+        need(str(i))
         circ = PyCirc[str(i)]
         
         # select insert or delete
