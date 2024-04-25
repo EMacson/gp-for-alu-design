@@ -4,55 +4,43 @@ from datetime import datetime
 
 from constants import MAIN_DIR, CIRCUITS_DIR, EMBRYO, MAX_SCORE
 from utils import redirect_print, restore_print
+
 #import constants
 from generation_control.generator import init_gen, generate_gen
 from generation_control.evaluator import circuit_evaluation, generation_evaluation
 from generation_control.crossover import crossover
 from mutation.topology import topology
-
-from monitor_output import monitor
-
+from mutation.rewire import rewire
+from display import display
 
 def main():
-    # create run dir
-    # might need to create gitignore for new circuit directories
-    #main_dir = os.path.dirname(os.path.abspath(__file__))
-    #circuit_dir = os.path.join(main_dir, "circuits")
-    dev = False
-    if dev == False:
-        current_time = datetime.now()
-        current_time_str = current_time.strftime("%Y-%m-%d_%H-%M-%S")
-        subdirectory = current_time_str
-        subdirectory_path = os.path.join(CIRCUITS_DIR, subdirectory)
-        os.makedirs(subdirectory_path)
+    # create run dir    
+    current_time = datetime.now()
+    current_time_str = current_time.strftime("%Y-%m-%d_%H-%M-%S")
+    subdirectory = current_time_str
+    subdirectory_path = os.path.join(CIRCUITS_DIR, subdirectory)
+    os.makedirs(subdirectory_path)
 
-        # create thread for monitoring output
-        interrupt_event = threading.Event()
+    # create first generation
+    gen_count = 0
+    init_gen(subdirectory_path)
+    print(subdirectory_path)
+    circuit_gen = os.path.join(CIRCUITS_DIR, subdirectory_path)
 
-        
-
-        # create first generation
-        gen_count = 0
-        init_gen(subdirectory_path)
-        print(subdirectory_path)
-        circuit_gen = os.path.join(CIRCUITS_DIR, subdirectory_path)
+    parents = []
 
     for i in range(500):
     #while True:
         # run selector
-        #circuit_gen = os.path.join(circuit_gen, str(gen_count))
         parents = generation_evaluation(circuit_gen, gen_count)
-        msg = f"\n\nparent 1: {parents["circ1"][0]} parent 2: {parents["circ2"][0]}"
-        #score = circuit_evaluation(circuit0, "0")
-        #msg = f"score {score}/64"
+        msg = f"\n\nparent 1 circuit number: {parents["circ1"][0]} parent 2 circuit number: {parents["circ2"][0]}"
         print(msg)
         
         # teriminate?
         if parents["circ1"][1] == MAX_SCORE:
-            # TODO: print final circuit
             break
 
-        # cross over
+        # crossover
         # creates parent.py circuit in current generation
         # parent.py used to generate the next generation
         p1 = str(parents["circ1"][0])
@@ -65,11 +53,12 @@ def main():
 
         # mutate
         topology(circuit_gen, gen_count)
-        #parents = generation_evaluation(circuit_gen, gen_count)
+        rewire(circuit_gen, gen_count)
 
-        # loop back
 
-    pass
+    # create final circuit diagram
+    display(str(parents["circ1"][0]), circuit_gen, str(gen_count))
+
 
 if __name__ == "__main__":
     main()

@@ -3,21 +3,17 @@ from pycirchdl import *
 from constants import GENERATION_SIZE, B_OUT, CARRY_OUT
 from utils import redirect_print, restore_print
 
-def evaluate():
-    pass
-
-def circuit_evaluation(circuit00):
-    Input = [x.name for x in circuit00.input]
-    Output = [y.name for y in circuit00.output]
+def circuit_evaluation(circ):
+    Input = [x.name for x in circ.input]
+    Output = [y.name for y in circ.output]
     names = Input + Output
     head = " ".join(names)
-    #print(head)
 
     score = 0
     count = 0
 
     # check for any dangling pins
-    for g in circuit00.gates:
+    for g in circ.gates:
         if g.name == "a1":
             continue
         elif g.name == "a2":
@@ -34,17 +30,18 @@ def circuit_evaluation(circuit00):
             continue
 
         no_out = True
-        for w in circuit00.wires:
+        for w in circ.wires:
             if w.source == g.name+"/y":
                 no_out = False
                 break
         if no_out:
-            msg = f"gate {g.name} have no out wire"
+            msg = f"circuit {circ.name} has a dangling port: gate {g.name} have no out wire"
             print(msg)
             return score
 
+    # check how many correct B and COUT values the circuit produces
     for a in Assign.iter(Input):
-        o = circuit00(a)
+        o = circ(a)
         if o()[0] == B_OUT[count]:
             score = score + 1
         if o()[1] == CARRY_OUT[count]:
@@ -67,6 +64,9 @@ def generation_evaluation(circuit_gen, gen_count):
 
     for i in range(GENERATION_SIZE):
         i_str = str(i)
+        # redirect stdout while loading a circuit
+        # pycirchdl creates  few print statement each time you open a circuit
+        # also used for catching any errors while opening
         try:
             redirect_print()
             load(i_str)
@@ -74,10 +74,12 @@ def generation_evaluation(circuit_gen, gen_count):
             restore_print()
         except:
             continue
+
         score = circuit_evaluation(circuit)
         msg = f"circuit {i}: score {score}/64"
         print(msg)
 
+        # check if the current score is greater then the stored top two scores so far
         if score > parents["circ1"][1]:
             temp = parents["circ1"]
             parents["circ1"] = (i, score)

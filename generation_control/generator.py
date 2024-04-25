@@ -16,17 +16,6 @@ def init_gen(path):
         new_circuit_file = os.path.join(gen0, i_str+".py")
         shutil.copy2(EMBRYO, new_circuit_file)
 
-        #i_str = str(i)
-        #new_circuit_name = "define(\"" + i_str + "\")"
-        #modified_content = content.replace('Define("embryo")', new_circuit_name)
-        #new_circuit_file = os.path.join(gen0, i_str+".py")
-        #with open(new_circuit_file, "w") as file:
-        #    file.write(modified_content)
-
-        #shutil.copy2(EMBRYO, new_circuit)
-
-    pass
-
 def generate_gen(path, gen_count):
     # create new generation directory
     new_gen = os.path.join(path, str(gen_count))
@@ -39,6 +28,4 @@ def generate_gen(path, gen_count):
     for i in range(GENERATION_SIZE):
         new_circuit_file = os.path.join(new_gen, str(i)+".py")
         shutil.copy2(parent_file, new_circuit_file)
-        pass
 
-    pass

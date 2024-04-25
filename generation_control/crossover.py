@@ -2,6 +2,7 @@ import os
 import shutil
 from pycirchdl import *
 
+# gate definitions for input and output pins
 circuit_init = [
     "GATE(\"a1\", type=\"inp\")\n",
     "GATE(\"a2\", type=\"inp\")\n",
@@ -56,7 +57,7 @@ def perform_crossover(gen, p1, p2):
 
     modified_lines.append("\n")
 
-    # write file
+    # write to file
     circ_file = os.path.join(gen, p1.name+".py")
     with open(circ_file, "r") as file:
         lines = file.readlines()
@@ -81,15 +82,3 @@ def crossover(gen, gen_count, p1, p2):
     circ2 = PyCirc[p2]
 
     perform_crossover(gen, circ1, circ2)
-
-    msg = f"\n\np1 gates: {len(circ1.gates)}    p2 gates: {len(circ2.gates)}\n\n"
-    print(msg)
-
-    parent_file = os.path.join(gen, "parent.py")
-    circ1_file = os.path.join(gen, p1+".py")
-    #with open(circ1_file, "r") as file:
-    #    content = file.read()
-
-    #shutil.copy2(circ1_file, parent_file)
-
-    pass

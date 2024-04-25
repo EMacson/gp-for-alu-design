@@ -7,6 +7,7 @@ from constants import GENERATION_SIZE, MUTATION_RATE
 from utils import redirect_print, restore_print
 
 def rewire_circ(circ, circ_file) :
+    # randomly choose two wires
     randomized_wires = circ.wires
     random.shuffle(randomized_wires)
 
@@ -35,7 +36,6 @@ def rewire_circ(circ, circ_file) :
 
     with open(circ_file, "w") as file:
         file.writelines(modified_lines)
-    pass
 
 def rewire(path, gen_count):
     path = os.path.join(path, str(gen_count))
@@ -53,7 +53,3 @@ def rewire(path, gen_count):
         circ = PyCirc[str(i)]
         restore_print()
         rewire_circ(circ, path)
-
-    pass
-
-    pass
