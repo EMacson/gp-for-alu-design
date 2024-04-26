@@ -6,7 +6,7 @@ import os
 gate_colors = {
     "inp": "skyblue",
     "out": "yellow",
-    "and2": "lightgreen",
+    "and2": "purple",
     "not": "salmon",
     "or2": "lightgreen",
 }
