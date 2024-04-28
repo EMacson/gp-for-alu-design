@@ -1,3 +1,6 @@
+# https://www.youtube.com/watch?v=MR6-TYelgkI was used to understand how to create a graph using Graphviz
+# https://www.youtube.com/watch?v=EzeeypMKx7o was used to implement regular expression for getting gate and wire defintions
+
 from graphviz import Digraph
 import re
 import os
@@ -32,16 +35,15 @@ def display(circ, dir, gen):
     gate_pattern = re.compile(r'GATE\s*\(\s*"([^"]+)"\s*,\s*type\s*=\s*"([^"]+)"\s*\)')
     wire_pattern = re.compile(r'WIRE\s*\(\s*"([^"]+)"\s*,\s*"([^"]+)"\s*\)')
 
-    # Find and process gate definitions
+    # get gate definitions
     gate_matches = gate_pattern.findall(content)
     for name, gate_type in gate_matches:
         node_name = f"{name}_{gate_type}"
         dot.node(name, label=name, shape=gate_shapes.get(gate_type), color=gate_colors.get(gate_type, "white"))
 
-    # Find and process wire connections
+    # get wire definitions
     wire_matches = wire_pattern.findall(content)
     for src, dest in wire_matches:
-        #dot.edge(src, dest)
         # Split the source and destination strings into gate names and ports
         src_split = src.split("/")
         src_gate = src_split[0]
